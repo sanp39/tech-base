@@ -1,10 +1,10 @@
-﻿	<?php
+<?php
 
 //MYSQLデータベースへ接続
-		$dsn = 'mysql:dbname=データベース名;host=ホスト名';
-		$user = 'ユーザー名';
-		$password = 'パスワード';
-		$pdo = new PDO($dsn, $user, $password, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING));
+	$dsn = 'mysql:dbname=データベース名;host=ホスト名';
+	$user = 'ユーザー名';
+	$password = 'パスワード';
+	$pdo = new PDO($dsn, $user, $password, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING));
 
 //テーブルを設定
 	$sql = "CREATE TABLE IF NOT EXISTS mission5x(
@@ -19,106 +19,105 @@
 	$correct_pass = "this";
 
 //送信フォーム
-		if (!empty ($_POST["name"]) && !empty ($_POST["comment"]) && empty ($_POST["editnum"])){
-		if ($_POST["pass"]==$correct_pass){
+	if (!empty ($_POST["name"]) && !empty ($_POST["comment"]) && empty ($_POST["editnum"])){
+	if ($_POST["pass"]==$correct_pass){
 
-			$sql = $pdo -> prepare("INSERT INTO mission5x(name, comment, date) VALUES(:name, :comment, :date)");
-			$sql -> bindParam(':name', $name, PDO::PARAM_STR);
-			$sql -> bindParam(':comment', $comment, PDO::PARAM_STR);
-			$sql -> bindParam(':date', $date, PDO::PARAM_STR);
-			$name = $_POST["name"];
-			$comment = $_POST["comment"];
-			$date = date("Y/m/d H:i:s");
-			$sql -> execute();
+		$sql = $pdo -> prepare("INSERT INTO mission5x(name, comment, date) VALUES(:name, :comment, :date)");
+		$sql -> bindParam(':name', $name, PDO::PARAM_STR);
+		$sql -> bindParam(':comment', $comment, PDO::PARAM_STR);
+		$sql -> bindParam(':date', $date, PDO::PARAM_STR);
+		$name = $_POST["name"];
+		$comment = $_POST["comment"];
+		$date = date("Y/m/d H:i:s");
+		$sql -> execute();
 
-		}elseif($_POST["pass"]==""){
-			$err[] = "パスワードを入力してください";
-		}else{
-			$err[] = "パスワードが間違っています";
-		}
-		}elseif(empty ($_POST["name"]) && !empty ($_POST["comment"]) && empty ($_POST["editnum"])){
-			$err[] = "名前を入力してください";
-		}elseif(!empty ($_POST["name"]) && empty ($_POST["comment"]) && empty ($_POST["editnum"])){
-			$err[] = "コメントを入力してください";
-		}
+	}elseif($_POST["pass"]==""){
+		$err[] = "パスワードを入力してください";
+	}else{
+		$err[] = "パスワードが間違っています";
+	}
+	}elseif(empty ($_POST["name"]) && !empty ($_POST["comment"]) && empty ($_POST["editnum"])){
+		$err[] = "名前を入力してください";
+	}elseif(!empty ($_POST["name"]) && empty ($_POST["comment"]) && empty ($_POST["editnum"])){
+		$err[] = "コメントを入力してください";
+	}
 
 //削除フォーム
-		if (!empty ($_POST["delno"])){
-		if ($_POST["pass"]==$correct_pass){
+	if (!empty ($_POST["delno"])){
+	if ($_POST["pass"]==$correct_pass){
 
-			$id = $_POST["delno"];
-			$sql = 'delete from mission5x where id=:id';
-			$stmt = $pdo->prepare($sql);
-			$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-			$stmt->execute();
+		$id = $_POST["delno"];
+		$sql = 'delete from mission5x where id=:id';
+		$stmt = $pdo->prepare($sql);
+		$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+		$stmt->execute();
 
-		}elseif($_POST["pass"]==""){
-			$err[] = "パスワードを入力してください";
-		}else{
-			$err[] = "パスワードが間違っています";
-		}
-		}
+	}elseif($_POST["pass"]==""){
+		$err[] = "パスワードを入力してください";
+	}else{
+		$err[] = "パスワードが間違っています";
+	}
+	}
 
 //編集フォーム
-		if (!empty ($_POST["editno"])){
-		if ($_POST["pass"]==$correct_pass){
+	if (!empty ($_POST["editno"])){
+	if ($_POST["pass"]==$correct_pass){
 
-			$id = $_POST["editno"];
-			$sql = 'SELECT * FROM mission5x WHERE id=:id';
-			$stmt = $pdo->prepare($sql);
-			$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-			$stmt->execute();
-			$results = $stmt->fetchAll();
-				foreach ($results as $row){
-					$edit_num = $row["id"];
-					$edit_name = $row["name"];
-					$edit_comment = $row["comment"];
-				}
+		$id = $_POST["editno"];
+		$sql = 'SELECT * FROM mission5x WHERE id=:id';
+		$stmt = $pdo->prepare($sql);
+		$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+		$stmt->execute();
+		$results = $stmt->fetchAll();
+			foreach ($results as $row){
+				$edit_num = $row["id"];
+				$edit_name = $row["name"];
+				$edit_comment = $row["comment"];
+			}
 
-		}elseif($_POST["pass"]==""){
-			$err[] = "パスワードを入力してください";
-		}else{
-			$err[] = "パスワードが間違っています";
-		}
-		}
+	}elseif($_POST["pass"]==""){
+		$err[] = "パスワードを入力してください";
+	}else{
+		$err[] = "パスワードが間違っています";
+	}
+	}
 
 //編集投稿フォーム
-		if (!empty ($_POST["name"]) && !empty ($_POST["comment"]) && !empty ($_POST["editnum"])){
-		if ($_POST["pass"]==$correct_pass){
+	if (!empty ($_POST["name"]) && !empty ($_POST["comment"]) && !empty ($_POST["editnum"])){
+	if ($_POST["pass"]==$correct_pass){
 
-			$id = $_POST["editnum"];
-			$name = $_POST["name"];
-			$comment = $_POST["comment"];
-			$sql = 'update mission5x set name=:name,comment=:comment where id=:id';
-			$stmt = $pdo->prepare($sql);
-			$stmt->bindParam(':name', $name, PDO::PARAM_STR);
-			$stmt->bindParam(':comment', $comment, PDO::PARAM_STR);
-			$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-			$stmt->execute();
+		$id = $_POST["editnum"];
+		$name = $_POST["name"];
+		$comment = $_POST["comment"];
+		$sql = 'update mission5x set name=:name,comment=:comment where id=:id';
+		$stmt = $pdo->prepare($sql);
+		$stmt->bindParam(':name', $name, PDO::PARAM_STR);
+		$stmt->bindParam(':comment', $comment, PDO::PARAM_STR);
+		$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+		$stmt->execute();
 
-		}elseif($_POST["pass"]==""){
-			$err[] = "パスワードを入力してください";
-		}else{
-			$err[] = "パスワードが間違っています";
-		}
-		}elseif(empty ($_POST["name"]) && !empty ($_POST["comment"]) && !empty ($_POST["editnum"])){
-			$err[] = "名前を入力してください";
-		}elseif(!empty ($_POST["name"]) && empty ($_POST["comment"]) && !empty ($_POST["editnum"])){
-			$err[] = "コメントを入力してください";
-		}
+	}elseif($_POST["pass"]==""){
+		$err[] = "パスワードを入力してください";
+	}else{
+		$err[] = "パスワードが間違っています";
+	}
+	}elseif(empty ($_POST["name"]) && !empty ($_POST["comment"]) && !empty ($_POST["editnum"])){
+		$err[] = "名前を入力してください";
+	}elseif(!empty ($_POST["name"]) && empty ($_POST["comment"]) && !empty ($_POST["editnum"])){
+		$err[] = "コメントを入力してください";
+	}
 
-	?>
+?>
 
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<title>WEB掲示板</title>
-		<meta charset="utf-8">
-	</head>
+<head>
+	<title>WEB掲示板</title>
+	<meta charset="utf-8">
+</head>
 
 <body>
-
 
 	<form action="mission_5x.php" method="post">
 
@@ -127,6 +126,7 @@
 	パスワード<input type="text" name="pass" >
 	<input type="submit" value="送信">
 	<input type="hidden" name="editnum" value=<?php if (!empty ($edit_num)){echo $edit_num;} ?> >
+
 	</form>
 
 
@@ -152,13 +152,12 @@
 
 	<?php 
 //エラー表示フォーム
-				if(isset($err)){
-					foreach($err as $value){ ?>
+	if(isset($err)){
+		foreach($err as $value){ ?>
 
-			<li><?php echo $value; ?></li>
+	<li><?php echo $value; ?></li>
 
-	<?php	 }
-			 	} ?>
+	<?php	 }} ?>
 
 	</ul>
 
@@ -182,6 +181,6 @@
 		}
 
 //MYSQLデータベースへの接続を閉じる
-$dbh = null;
+	$dbh = null;
 
-	?>
+?>
